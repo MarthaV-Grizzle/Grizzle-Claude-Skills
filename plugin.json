@@ -1,0 +1,11 @@
+{
+  "name": "Grizzle Skills",
+  "description": "Editorial skills for Grizzle content review workflows.",
+  "version": "1.0.0",
+  "skills": [
+    {
+      "name": "editorial-review",
+      "path": "skills/editorial-review"
+    }
+  ]
+}

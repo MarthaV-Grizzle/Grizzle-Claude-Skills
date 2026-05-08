@@ -1,0 +1,14 @@
+{
+  "marketplace": {
+    "name": "Grizzle Skills",
+    "description": "Editorial skills for Grizzle content review workflows.",
+    "plugins": [
+      {
+        "name": "Grizzle Skills",
+        "description": "Includes the editorial-review skill for comprehensive blog content QA.",
+        "path": ".",
+        "version": "1.0.0"
+      }
+    ]
+  }
+}
