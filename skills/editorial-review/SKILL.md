@@ -8,7 +8,7 @@ description: |
 
 # Editorial Review Skill
 
-**Version: 2.3** — *When updating this skill, always increment the version (2.3, 2.4, …) and update this line so we know which canonical version we're working from. Do not duplicate this skill into multiple folders — the source of truth is `~/.claude/skills/editorial-review/`.*
+**Version: 2.4** — *When updating this skill, always increment the version (2.3, 2.4, …) and update this line so we know which canonical version we're working from. Do not duplicate this skill into multiple folders — the source of truth is `~/.claude/skills/editorial-review/`.*
 
 You are performing an editorial review of a draft blog article. This is a structured, multi-step process that cross-references the article against three sources of truth: a universal editorial checklist, client-specific content guidelines, and recent client feedback. You also verify factual claims against live sources.
 
@@ -412,6 +412,50 @@ When verifying secondary keyword coverage, accept plural forms and minor grammat
 - "electrician business CRMs" satisfies "electrician business crm"
 
 Only flag a keyword as missing if **no form** of it — singular, plural, with or without articles — appears anywhere in the article body text. Always check full document text (paragraphs + table cells) when running this check.
+### External links — verify they exist before flagging nofollow compliance
+
+Before recording any nofollow-related finding, run a domain-level check on all URLs in `links_extract.json` to confirm that external (non-client-domain) links actually exist in the article body. Many client articles link exclusively to the client's own domain and subdomains. If all links are internal to the client's domain, the nofollow requirement is N/A and must not be flagged.
+
+```python
+from urllib.parse import urlparse
+import json
+
+with open('links_extract.json') as f:
+    links = json.load(f)
+
+client_domain = "pipedrive.com"  # replace per client
+external = [l for l in links if client_domain not in urlparse(l['url']).netloc]
+print(f"External links in body: {len(external)}")
+```
+
+Only flag nofollow compliance if external (non-client-domain) links exist in the article body. Links that appear only in the metadata table (e.g., a brief URL) are not body content — nofollow does not apply to them.
+
+### Competitor characterisation — 'best for' and feature claims require live verification
+
+For any article containing a competitor comparison table or listicle, the "best for" positioning and feature descriptions for each competitor MUST be verified against that tool's current live product page — not recalled from training data. Competitor positioning shifts quickly. Two confirmed patterns of error:
+
+- **Audience positioning**: A tool historically associated with enterprises may now actively market to startups or SMBs (or vice versa). Never assume a tool's target audience from its historical reputation — check the live homepage or product page.
+- **Product scope expansion**: A tool known for one category (e.g., project management) may have launched a full product in an adjacent category (e.g., dedicated CRM). Always check whether the article's description matches what is actually on the live product page.
+
+Verdict rule: If the article's "best for" or feature description contradicts the tool's own current marketing copy, flag as INACCURATE and cite the live page URL.
+
+**Note:** This is especially relevant for fast-moving tools like monday.com, Notion, Asana, and ClickUp, all of which have expanded significantly into CRM and sales tooling in recent years.
+
+### Setup guide UI navigation — verify against the product's own knowledge base
+
+Step-by-step setup instructions (navigation paths, button labels, menu names) are among the most frequently outdated content in product-focused articles. UI changes with product updates; writers often copy paths from earlier documentation or outdated help articles.
+
+For any article containing specific navigation instructions, check the product's official support or knowledge base to confirm the stated path still exists. The KB is almost always updated to reflect current UI; the article's instructions may reflect an interface from months or years earlier.
+
+Verification process:
+1. Identify any explicit navigation path in the article (e.g., "click the ··· More icon", "go to Settings > Integrations")
+2. Search the product's help centre for the equivalent current article
+3. Compare the documented path against what the article states
+
+Flag any navigation path that does not match the current KB as OUTDATED, citing: the article's stated path, the correct current path, and the KB source URL with its last-updated date.
+
+**Confirmed example (Pipedrive, April 2026):** The "··· More icon on the left-hand sidebar > Import data" path was replaced by "account menu > Tools and apps > Import data > Import from spreadsheet". Articles written before this UI change will have the wrong navigation. Reference: support.pipedrive.com/en/article/importing-data-into-pipedrive-with-spreadsheets
+
 
 ---
 
