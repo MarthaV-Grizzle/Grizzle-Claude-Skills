@@ -73,10 +73,17 @@ Not all checklist items apply to all sections. Here's the mapping:
 
 Some checklist items are article-level (not section-level) and should be evaluated once after all sections are reviewed:
 - **CL-05: Links Quality** (overall density and patterns)
-- **CL-11: Clearscope** (whole-article score)
+- **CL-11: Clearscope** (whole-article score — skip entirely for confirmed sales enablement pieces; mark N/A)
 - **CL-12: Internal Links** (overall density, missing key pages)
 - **CL-15: Content Design** (overall visual balance)
-- **CL-16: Brief Alignment** (cross-reference the article against the brief — check topic, structure, keywords, angle, and any specific requirements)
+- **CL-16: Brief Alignment** (cross-reference the article against the brief — check topic, structure, keywords, angle, specific requirements, AND any explicit data/stat requests; see `references/context/client-agnostic-checks.md` §6)
+
+**Supplementary article-level checks from `references/context/client-agnostic-checks.md`** — run these after all section reviews:
+- **§1 Brand first-mention** — every named third-party brand or customer must have a brief descriptor on its first appearance
+- **§2 Table cell punctuation** — complete-sentence table cells must end with a full stop
+- **§3 Table cell sentence case** — in Signal/Explanation or Label/Description tables, Explanation cells should start lowercase
+- **§4 Currency format** — written-out currency names ("Dollars", "Euros") should be standard abbreviations (USD, EUR)
+- **§5 Unsourced body claims** — quantified behaviour claims (e.g. "customers are X more likely to...") without a hyperlinked source
 
 ---
 

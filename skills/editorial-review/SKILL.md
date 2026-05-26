@@ -8,7 +8,7 @@ description: |
 
 # Editorial Review Skill
 
-**Version: 2.4** — *When updating this skill, always increment the version (2.3, 2.4, …) and update this line so we know which canonical version we're working from. Do not duplicate this skill into multiple folders — the source of truth is `~/.claude/skills/editorial-review/`.*
+**Version: 2.6** — *When updating this skill, always increment the version (2.3, 2.4, …) and update this line so we know which canonical version we're working from. Do not duplicate this skill into multiple folders — the source of truth is `~/.claude/skills/editorial-review/`.*
 
 You are performing an editorial review of a draft blog article. This is a structured, multi-step process that cross-references the article against three sources of truth: a universal editorial checklist, client-specific content guidelines, and recent client feedback. You also verify factual claims against live sources.
 
@@ -23,6 +23,12 @@ Read these reference files in the skill directory to understand the review crite
 - `references/agents/fact_checker.md` — Instructions for fact-checking claims
 - `references/agents/qa_verifier.md` — Instructions for QA verification
 - `references/agents/final_qa.md` — Instructions for final QA before output
+
+**Context files** (loaded at the steps indicated — not all upfront):
+- `references/context/client-agnostic-checks.md` — Supplementary checks for every review. Load at the start of Step 3.
+- `references/context/clients/{client-name}.md` — Client-specific rules, known pitfalls, verified stats, and capitalisation exceptions. Load at Step 2e alongside ClickUp guidelines. If no file exists for this client, skip silently.
+
+
 
 ## Step 0: Gather inputs
 
@@ -132,6 +138,10 @@ Real rules, preferences, or instructions (style rules, tone descriptors, structu
 
 Merge all fetched + user-supplied pages into `guidelines_context`. Key things to extract: tone of voice, typography/style rules, structural requirements (ToC, metadata), preferred spellings and words to avoid, internal linking minimums, CTA rules, Top Reminders.
 
+**Also load `references/context/clients/{client-name}.md`** if it exists. Merge its content into `guidelines_context` — it captures confirmed pitfalls, capitalisation rules, and verified stats from previous reviews of this client. It supplements, never replaces, the ClickUp guidelines.
+
+
+
 ### 2f. Classify pages as citable / non-citable (Python — prevents phantom citations)
 
 Immediately after fetching, run the page classifier. This is the most important anti-hallucination step in the pipeline: it stops the reviewer from later citing rules "from" a guideline page that is actually empty or a template stub.
@@ -156,9 +166,31 @@ If the script flags more than 3 pages as non-citable, PAUSE and ask the editor w
 
 If all pages are empty AND the user provides no alternative sources, STOP. Do not generate client-specific feedback without a source of truth.
 
+---
+
+## 🚫 GATE 1 — PAUSE HERE
+
+**Do not proceed to Step 3 until the editor confirms.**
+
+Present the following to the editor:
+
+1. **Article stats** — word count, section count, and any structural flags from `article_stats.json` (missing H1, metadata issues, etc.)
+2. **Guidelines sourced** — list every ClickUp page fetched, with its citable status (`citable: true / false`) from `guideline_pages_index.json`
+3. **Brief status** — confirm the brief was successfully fetched and summarise its key requirements in 3–5 bullet points
+
+Then ask:
+
+> "I've completed preprocessing and guidelines fetch. Here's what I'm working with — [present the above]. Is there anything missing, any additional sources to add, or any context I should factor in before I start the editorial review?"
+
+**Wait for an explicit go-ahead before continuing to Step 3.**
+
+---
+
 ## Step 3: Checklist review (section by section)
 
 This is where most of the editorial feedback comes from. Read `references/agents/checklist_reviewer.md` for the full instructions.
+
+**Load `references/context/client-agnostic-checks.md` before starting section reviews.** This file contains eight supplementary checks (brand first-mention, table cell punctuation and case, currency format, unsourced claims, brief data requirements, case study verification, and stat paraphrase rules) that apply to every review regardless of client. Keep it in context for the full Step 3 pass alongside the standard CL-01 through CL-16 checklist.
 
 **Token efficiency strategy:** Do NOT send the entire article plus entire checklist in one call. Instead, process sections in batches:
 
@@ -224,6 +256,25 @@ Read the Strategic Review section in `references/agents/checklist_reviewer.md` f
 **Token efficiency:** Because this is article-level, you should already have the full structured sections in context from Step 3. Do NOT re-read the article. Use the section data you already have, plus the client guidelines already fetched in Step 2. This should be a single, focused pass.
 
 Save strategic review results to `strategic_feedback.json`.
+
+---
+
+## 🚫 GATE 2 — PAUSE HERE
+
+**Do not proceed to Step 4 until the editor confirms.**
+
+Present the following to the editor:
+
+1. **Editorial checklist findings** — a readable summary of all FAILs and NEEDS REVIEWs from Step 3, grouped by category (1A–1F)
+2. **Strategic review findings** — a summary of all SR-01 through SR-07 verdicts from Step 3b, noting any FAILs
+
+Then ask:
+
+> "I've completed the editorial and strategic review. Here's what I found — [present the above]. Do any of these findings need adjusting? Are there client-specific nuances, context from your end, or recent feedback I should factor in before I move to fact-checking?"
+
+**Wait for an explicit go-ahead before continuing to Step 4.**
+
+---
 
 ## Step 4: Fact-checking
 
@@ -459,6 +510,25 @@ Flag any navigation path that does not match the current KB as OUTDATED, citing:
 
 ---
 
+---
+
+## 🚫 GATE 3 — PAUSE HERE
+
+**Do not proceed to Step 5 until the editor confirms.**
+
+Present the following to the editor:
+
+1. **Fact-check verdicts** — list every claim checked with its verdict (ACCURATE, OUTDATED, INACCURATE, FLAG, UNVERIFIABLE) and a one-line summary of the finding
+2. **Gated or unverifiable sources** — flag any URLs that were inaccessible, note what was needed (e.g., paste page content), and give the editor the opportunity to supply that content now
+
+Then ask:
+
+> "Fact-checking is complete. Here are the verdicts — [present the above]. Is there anything you'd like me to re-verify, override, or dig into further? If any source was gated, paste the relevant content here and I'll re-check those claims before moving on."
+
+**Wait for an explicit go-ahead before continuing to Step 5.**
+
+---
+
 ## Step 5: QA Verification
 
 Read `references/agents/qa_verifier.md` for full instructions.
@@ -504,6 +574,26 @@ Include this instruction verbatim in the subagent prompt:
 3. Update `factcheck_feedback.json` with any corrections
 
 **Token efficiency:** Pass only article excerpts (paragraph-level), not the full article. The subagent needs enough context to evaluate the claim's framing — not the whole piece.
+
+---
+
+## 🚫 GATE 4 — PAUSE HERE
+
+**Do not proceed to Step 6 until the editor confirms.**
+
+Present the following to the editor:
+
+1. **QA summary** — list every finding removed or downgraded during Steps 5 and 5b, with the reason (e.g., phantom citation, no direct quote, snippet-only evidence)
+2. **Subagent findings** — summarise any new issues or corrections raised by the independent QA subagent in Step 5b
+3. **Final counts** — FAILs / NEEDS REVIEWs / PASSes across all sections as they stand after QA
+
+Then ask:
+
+> "QA is done. Here's what was removed or adjusted, and the final tally — [present the above]. Does everything look right? Say the word and I'll assemble the final report."
+
+**Wait for an explicit go-ahead before continuing to Step 6.**
+
+---
 
 ## Step 6: Assemble the report
 
