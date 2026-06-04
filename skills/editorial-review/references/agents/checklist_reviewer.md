@@ -148,3 +148,19 @@ If the client's guidelines include a rule about **positive framing** (e.g. "lead
 A **fail** applies when the opening sentence leads with negatives or obstacles before any positive framing is established — cite the relevant positive-framing rule from the client's guidelines.
 
 This check only applies when the client's guidelines contain an explicit positive-framing rule. It does not mean pain points are banned from intros — the question is specifically whether the *opening* sentence is the negative one.
+
+### 3. Informal vocabulary check (conditional on client guidelines)
+
+If the client's TOV guidelines call for a professional-casual register (e.g. Pipedrive's "be clear, be intelligent" framing, or any guideline that lists banned casual phrases), run a deliberate word-level scan of the full article text for informal or colloquial language that falls below that register.
+
+This is easy to miss on a general read-through — it requires an explicit pass, not a vibe check. Look for:
+- Casual filler words or phrases: "tons of", "a lot of", "stuff", "things"
+- Emotive or informal verbs in a professional context: "pester", "bug", "hassle"
+- Any phrases the client's TOV guidelines explicitly list as banned (e.g. Pipedrive's "Spoiler alert:", "And hey,", "Well,", "kick things off")
+- Tentative framing when describing definitive product capabilities: overuse of "can", "could", "might" where the benefit is known and the positive-first guideline supports assertive phrasing (e.g. "CRMs can help you…" → "CRMs help you…")
+
+Treat any confirmed occurrence as a **FAIL (CL-03)**, quoting the exact phrase and its location. Cite the relevant TOV rule — either the banned-phrases list or the "be positive / lead with the do" principle.
+
+This check only applies when the client's guidelines include an explicit register or vocabulary rule. If the client's fetched pages are silent on this, skip it.
+
+*Confirmed pitfall (Pipedrive, PIPEBLOG1106, June 2026):* "pester" in key takeaways; "tons of" in body text — both missed on general read-through, caught only by the editor.

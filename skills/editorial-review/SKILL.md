@@ -8,7 +8,7 @@ description: |
 
 # Editorial Review Skill
 
-**Version: 2.6** — *When updating this skill, always increment the version (2.3, 2.4, …) and update this line so we know which canonical version we're working from. Do not duplicate this skill into multiple folders — the source of truth is `~/.claude/skills/editorial-review/`.*
+**Version: 2.7** — *When updating this skill, always increment the version (2.3, 2.4, …) and update this line so we know which canonical version we're working from. Do not duplicate this skill into multiple folders — the source of truth is `~/.claude/skills/editorial-review/`.*
 
 You are performing an editorial review of a draft blog article. This is a structured, multi-step process that cross-references the article against three sources of truth: a universal editorial checklist, client-specific content guidelines, and recent client feedback. You also verify factual claims against live sources.
 
@@ -88,7 +88,9 @@ sdt_elements = body.findall('.//{http://schemas.openxmlformats.org/wordprocessin
 # SDT elements represent structured content including checkboxes
 ```
 
-Do NOT report "no screenshots" unless `screenshot_count == 0`. Do NOT report "recommended reading not hyperlinked" unless the hyperlink element check confirms no hyperlink child is present in that paragraph. Do NOT report "SEO checklist not ticked" unless you have confirmed via SDT inspection — always cross-check with the user if uncertain, since SDT elements may be rendered differently across Word versions.
+Do NOT report "no screenshots" unless `screenshot_count == 0`. Do NOT report "recommended reading not hyperlinked" unless the hyperlink element check confirms no hyperlink child is present in that paragraph. Do NOT report "SEO checklist not ticked" unless you have confirmed via SDT inspection — and even then, treat this result with caution.
+
+**SDT checkbox limitation (confirmed false-FAIL risk):** If the SDT count is 0 or 1 and the article is expected to have a secondary keyword checklist, do NOT report the checklist as missing or incorrectly formatted. `python-docx`'s `body.findall()` misses certain Word checkbox implementations — checkboxes can be present and functional in the document while returning an SDT count of 0 or 1 programmatically. Treat checkbox format as UNVERIFIABLE via code and rely on the editor's direct observation. Skip this finding entirely if uncertain. A false FAIL here (confirmed in PIPEBLOG1106 review, June 2026) is worse than omitting the check.
 
 ## Step 1b: Fetch the brief
 
