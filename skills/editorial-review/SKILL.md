@@ -8,7 +8,7 @@ description: |
 
 # Editorial Review Skill
 
-**Version: 2.7** — *When updating this skill, always increment the version (2.3, 2.4, …) and update this line so we know which canonical version we're working from. Do not duplicate this skill into multiple folders — the source of truth is `~/.claude/skills/editorial-review/`.*
+**Version: 2.8** — *When updating this skill, always increment the version (2.3, 2.4, …) and update this line so we know which canonical version we're working from. Do not duplicate this skill into multiple folders — the source of truth is `~/.claude/skills/editorial-review/`.*
 
 You are performing an editorial review of a draft blog article. This is a structured, multi-step process that cross-references the article against three sources of truth: a universal editorial checklist, client-specific content guidelines, and recent client feedback. You also verify factual claims against live sources.
 

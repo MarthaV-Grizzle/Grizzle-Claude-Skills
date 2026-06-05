@@ -51,8 +51,6 @@ If WebFetch fails (JavaScript-heavy page, paywall, etc.), note it as "unverifiab
 
 6. **Don't over-fetch.** Each WebFetch call costs tokens. Batch claims by source URL where possible — if 3 claims are all about the same product's features, fetch the feature page once and check all 3.
 
-7. **Read the full page before flagging case study details as unsupported.** Customer story pages typically open with a headline stat box, followed by a longer narrative body. Details about process, personnel, and methodology (e.g. "freelance SEO experts", specific criteria, workflow steps) often appear only in the narrative — not in the stat box. Never flag a case study detail as unsupported unless you have read the complete fetched page and confirmed the detail is absent throughout. Skimming the top of the page and concluding "not in source" is a documented source of false-negative fact-check findings.
-
 ## Output format
 
 Return a JSON array:

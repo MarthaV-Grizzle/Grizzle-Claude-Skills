@@ -42,14 +42,6 @@ When a FAQ answer names Salesforce, HubSpot, Zoho, or other CRM competitors, it
 **must** include Pipedrive's competitive differentiation — not just list alternatives
 neutrally.
 
-**Pattern to flag:** "Other CRM systems for email marketing include Salesforce,
-HubSpot and Zoho CRM." — names competitors with no differentiation language.
-
-**What to require instead:** A brief, fact-based positioning note explaining why
-Pipedrive is the recommended answer (e.g. "Salesforce and HubSpot are more complex
-and enterprise-focused; Pipedrive is designed for ease of use by smaller sales
-teams"). The differentiation must be research-backed, not asserted.
-
 Flag as **FAIL (CL-04 / Brief alignment)** if competitors are named in FAQs without
 any differentiation argument.
 
@@ -61,40 +53,72 @@ and Zoho with no Pipedrive differentiation.*
 ## Fact-check guardrails
 
 ### Twilio Segment ≠ CRM
-Twilio Segment is a **customer data platform (CDP)**, not a CRM. If an article cites
-a case study hosted on `customers.twilio.com` and describes the company as "using
-their CRM", that is a factual mischaracterisation — they were using Twilio Segment
-or another Twilio communication product.
+Twilio Segment is a **customer data platform (CDP)**, not a CRM. Flag as **INACCURATE**
+if it is described as or implied to be a CRM.
 
-- Flag as **INACCURATE** if Twilio or Twilio Segment is described as, or implied to
-  be, a CRM.
-- The underlying case study data may still be valid — the fix is to accurately
-  describe what product was used, or remove the CRM framing.
-
-*Confirmed issue: PIPEBLOG1106 (June 2026) — Drift/Twilio Segment case study framed
-as "Drift used its CRM".*
+*Confirmed issue: PIPEBLOG1106 (June 2026)*
 
 ### Case studies hosted on third-party platforms
-When a case study URL is on a third-party platform (e.g. `customers.twilio.com`,
-`customers.salesforce.com`), the hosting company is **not necessarily** the product
-being used. Always verify what specific product or service the featured customer was
-actually using — it may be the host's product, or a completely different tool.
-
-Writers frequently conflate the hosting domain with the product described. Do not
-accept "the case study is on [vendor].com, therefore the company used [vendor's
-product]" as verification.
+The hosting domain is not necessarily the product being used. Always verify what the
+featured customer was actually using — do not accept "the case study is on [vendor].com"
+as verification.
 
 ---
 
 ## Company acquisition awareness
 
-Confirm the current status of any named third-party company, especially fast-moving
-sales tech vendors. Known acquisitions relevant to Pipedrive content:
-
-- **Drift** → acquired by Salesloft (February 2024). Articles referring to "Drift"
-  as a standalone platform are factually outdated. Update to "Drift (now part of
+- **Drift** → acquired by Salesloft (February 2024). Update to "Drift (now part of
   Salesloft)" or swap the example.
 
-Check for similar issues with any company described in the article that operates in
-CRM-adjacent categories (sales engagement, conversational marketing, revenue
-intelligence). These sectors see frequent M&A.
+Check CRM-adjacent vendors (sales engagement, conversational marketing, revenue
+intelligence) for similar M&A issues.
+
+---
+
+## Editor-confirmed rules (PIPEBLOG1103, June 2026)
+
+### Clearscope — competitor name exclusion
+Competitor CRM brand names in the Clearscope unused terms list can be excluded from
+the A++ target. Do not flag them as missed keyword opportunities.
+
+### Nofollow comment scope
+The nofollow comment must wrap the **complete anchor text phrase**, not a single word.
+Anchor text should be 3–5 words — flag one-word and 5+ word anchors.
+
+### Image sources (separate from alt text)
+Images require two things:
+1. **Alt text** — `[Keyword][Pipedrive][one to two words to describe shot]`, as a comment
+2. **Source comment** — separate comment crediting/linking the image source
+
+These are distinct. A passing alt text check does not cover the source requirement.
+
+### One-sentence paragraph openers
+Pipedrive editors prefer one-line / one-sentence openers throughout — not just in the
+intro. Flag multi-clause opening paragraphs in body sections.
+
+---
+
+## Confirmed case study stats (verified June 2026)
+
+| Case study | Confirmed stat | Source |
+|---|---|---|
+| Expanish | Team of 3, ~600 web leads/month, conversion 15%→30% | pipedrive.com/en/case-studies/expanish-case-study |
+| Marmelada Market | Sales process time cut >50%; productivity +20% | pipedrive.com/en/case-studies/marmelada-case-study |
+
+---
+
+## Pricing notes (June 2026)
+
+- Plan names: **Lite, Growth, Premium, Ultimate**
+- Pricing page defaults to EUR — verify USD on a US-localised render
+- AI notifications (e.g. "Next best actions") are **Premium plan and above only**
+
+---
+
+## Standing patterns to watch
+
+- Oxford commas recurring — check programmatically
+- Stats attributed by name but not hyperlinked — verify all stat hyperlinks
+- UK region URLs (e.g. klaviyo.com/uk) — replace with global/US versions
+- Metadata fields (slug, author, secondary KW checklist) left as placeholders
+- FAQ section goes **after** Final thoughts (updated 5/5/26)
